@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+    //di panggil shared preferncenya ke sini nanti pas isi email sam password
 
     public void getData(){
 
@@ -61,41 +62,41 @@ public class MainActivity extends AppCompatActivity {
 
         myServiceHolder.set(myService);
 
-
-        final Call<ResponGetToken> portResponseCall = retrofitServices.getPortListData();
-        portResponseCall.enqueue(new Callback<ResponGetToken>() {
+        Call<List<Item>> call = myService.getItems();
+        call.enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<ResponGetToken> call, Response<ResponGetToken> response) {
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
-                String value = response.body().getStatus();
-//            progressBar.setVisibility(View.GONE);
-                if (value.equals("success")) {
+                String status = response.body().getMessage();
+                LoginResponse loginResponse = response.body();
+                if (response.isSuccessful()) {
+                    Log.d("Server Response", "failed" + loginResponse.getData());
+                    //textView_log.setText(loginResponse.getMessage());
+                    Intent intent = new Intent(LoginOrMakeAccount.this,ActivityNampungFragmnet.class);
+                    startActivity(intent);
+                    finish();
+                }
 
-
+                else  {
+                    textView_log.setText("User Not Found");
 
                 }
+
             }
 
-
             @Override
-            public void onFailure(Call<ResponGetToken> call, Throwable t) {
-                Log.e("Retrofit Get", t.toString());
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Log.d("Server Response","success"+t.toString());
+                textView_log.setText("Connection not found");
+
+
+
 
             }
         });
 
 
+
     }
-
-
-
-
-
-
-
-
-
-
-}
 
   }
