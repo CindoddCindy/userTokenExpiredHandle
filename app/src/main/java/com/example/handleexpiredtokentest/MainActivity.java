@@ -3,6 +3,7 @@ package com.example.handleexpiredtokentest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ClipData;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -32,7 +33,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void getData(){
 
+        SharedPreferences settings = getSharedPreferences(getResources()
+                .getString(R.string.sharedPreferences_token),MODE_PRIVATE);
 
+
+
+        String token = settings.getString("token", null);
 
         MyServiceHolder myServiceHolder = new MyServiceHolder();
 
@@ -62,32 +68,30 @@ public class MainActivity extends AppCompatActivity {
 
         myServiceHolder.set(myService);
 
-        Call<List<Item>> call = myService.getItems();
-        call.enqueue(new Callback<LoginResponse>() {
+        Call<ResponGetToken> call = myService.getItems();
+        call.enqueue(new Callback<ResponGetToken>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(Call<ResponGetToken> call, Response<ResponGetToken> response) {
 
-                String status = response.body().getMessage();
-                LoginResponse loginResponse = response.body();
+               // LoginResponse loginResponse = response.body();
+                ResponGetToken responGetToken = response.body();
                 if (response.isSuccessful()) {
-                    Log.d("Server Response", "failed" + loginResponse.getData());
+                    Log.d("Server Response", "failed" + responGetToken.getDisplayName());
                     //textView_log.setText(loginResponse.getMessage());
-                    Intent intent = new Intent(LoginOrMakeAccount.this,ActivityNampungFragmnet.class);
-                    startActivity(intent);
-                    finish();
+
                 }
 
                 else  {
-                    textView_log.setText("User Not Found");
+                   // textView_log.setText("User Not Found");
 
                 }
 
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(Call<ResponGetToken> call, Throwable t) {
                 Log.d("Server Response","success"+t.toString());
-                textView_log.setText("Connection not found");
+                //textView_log.setText("Connection not found");
 
 
 
