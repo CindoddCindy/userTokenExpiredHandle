@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">HandleExpiredTokenTest</string>
+    <string name="sharedPreferences_token">""</string>
+</resources>
